@@ -107,10 +107,8 @@ class HTTPClient(object):
             sys.exit()
 
         data = self.recvall(self.clientSocket)
-
         code =self.get_code(data)
         body= self.get_body(data)
-
         return HTTPRequest(code, body)
 
     def POST(self, url, args=None):

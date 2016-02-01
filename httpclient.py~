@@ -36,23 +36,7 @@ class HTTPResponse(object):
 
 
 class HTTPClient(object):
-    def get_host_path_port(self,url):
-        port = 80
-        host =url.replace('http://', "")
-        path = "/"
-
-
-        index1 = host.find('/')
-        if index1 != -1:
-            path = host[index1:]
-            host = host[:index1]
-
-
-        index2 = host.find(':')
-        if index2 != -1:
-            port = int(host[index2+1:])
-            host = host[:index2]
-        return host, path, port
+    #def get_host_path_port(self,url):
 
     def connect(self, host, port):
         #create a new socket
@@ -95,7 +79,21 @@ class HTTPClient(object):
         return str(buffer)
 
     def GET(self, url, args=None):
-        host, path, port = self.get_host_path_port(url)
+        port = 80
+        host =url.replace('http://', "")
+        path = "/"
+
+
+        index1 = host.find('/')
+        if index1 != -1:
+            path = host[index1:]
+            host = host[:index1]
+
+
+        index2 = host.find(':')
+        if index2 != -1:
+            port = int(host[index2+1:])
+            host = host[:index2]
 
         request ="GET "+path+" HTTP/1.1 \r\nHost: "+host+"\r\nAccept: */*\r\nConnection:close\r\n\r\n"
 
@@ -113,7 +111,22 @@ class HTTPClient(object):
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
-        host, path, port = self.get_host_path_port(url)
+        port = 80
+        host =url.replace('http://', "")
+        path = "/"
+
+
+        index1 = host.find('/')
+        if index1 != -1:
+            path = host[index1:]
+            host = host[:index1]
+
+
+        index2 = host.find(':')
+
+        if index2 != -1:
+            port = int(host[index2+1:])
+            host = host[:index2]
         if args != None:
             args=urllib.urlencode(args)
         else:

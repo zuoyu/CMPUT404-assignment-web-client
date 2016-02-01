@@ -37,32 +37,35 @@ class HTTPResponse(object):
 
 class HTTPClient(object):
     #def get_host_path_port(self,url):
+ 
 
     def connect(self, host, port):
         #create a new socket
+
+        if (host[-1]== '/'):
+            host = host[:-1]
         try:
             self.socketclient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except soccket.error as msg:
             print('Failed to create socket!')
             sys.exit()
 
-        if (host[-1]== '/'):
-            host = host[:-1]
-
         self.socketclient.connect((host, port))
         return self.socketclient
 
     def get_code(self, data):
+	#split the data and get the code part
         newdata= data.split()
 	code = newdata[1]
         return int(code)
 
     def get_headers(self,data):
+	#split the data and get the header part
 	new_data = data.split('\r\n\r\n')
 	header = new_data[0]
         return header
     def get_body(self, data):
-
+	#split the data and get the body part
         index = data.find('\r\n\r\n')
         body = data[index:]
         return body
@@ -79,6 +82,7 @@ class HTTPClient(object):
         return str(buffer)
 
     def GET(self, url, args=None):
+	#get the host port and path
         port = 80
         host =url.replace('http://', "")
         path = "/"
@@ -95,6 +99,7 @@ class HTTPClient(object):
             port = int(host[index2+1:])
             host = host[:index2]
 
+	#fill the GET request message
         request ="GET "+path+" HTTP/1.1 \r\nHost: "+host+"\r\nAccept: */*\r\nConnection:close\r\n\r\n"
 
         self.clientSocket = self.connect(host,port)
@@ -111,10 +116,10 @@ class HTTPClient(object):
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
+	#get the host port and path
         port = 80
         host =url.replace('http://', "")
         path = "/"
-
 
         index1 = host.find('/')
         if index1 != -1:
@@ -131,7 +136,8 @@ class HTTPClient(object):
             args=urllib.urlencode(args)
         else:
             args = ''
-
+	
+	#fill the POST request message
         request ="POST "+path+" HTTP/1.1 \r\nHost: "+host+"\r\nContent-Length: "+str(len(args))+"\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: */*\r\nConnection:close\r\n\r\n"+args
 
 	self.clientSocket = self.connect(host,port)
